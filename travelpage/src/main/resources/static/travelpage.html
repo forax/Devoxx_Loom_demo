@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+window.onload = async () => {
+  let destinationInput = document.getElementById("destination");
+  let destinationButton = document.getElementById("destinationButton");
+  let travelTable = document.getElementById("travelTable");
+
+  destinationButton.onclick = async () => {
+    let destination = destinationInput.value;
+    let travelRequest = {
+      destination: destination,
+    };
+    let response = await fetch("/api/travel", {
+          method: 'POST',
+          body: JSON.stringify(travelRequest),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    if (response.status >= 400 && response.status < 600) {
+      let tr = document.createElement("tr");
+      let td = document.createElement("td");
+      td.innerHTML = "No Travel found, retry later ...";
+      tr.append(td);
+      travelTable.append(tr);
+      return;
+    }
+    let result = await response.json();
+    console.log(result);
+
+    let tr = document.createElement("tr");
+    let addTableData = (value) => {
+      let td = document.createElement("td");
+      td.innerHTML = value;
+      tr.append(td);
+    };
+
+    addTableData(destination);
+    addTableData(result.quotation.quotation);
+    addTableData(result.quotation.agency);
+    addTableData(result.weather.weather);
+    addTableData(result.weather.agency);
+
+    travelTable.append(tr);
+
+    //textInput.value = "";
+  };
+};
+    </script>
+    <style>
+
+    </style>
+</head>
+<body>
+    <h2>Find a Travel !</h2>
+
+    <p>
+        Type a destination like "Philadelphia", "Wrexham", ...
+    </p>
+
+    <div id="container">
+        <input id="destination" type="text" placeholder="Type a destination here">
+        <button id="destinationButton">Find a travel !</button>
+    </div>
+
+    <h3>Travels</h3>
+    <table id="travelTable">
+        <tr>
+            <th>Destination</th><th>Travel Price</th><th>Travel Agency</th><th>Weather</th><th>Weather Agency</th>
+        </tr>
+    </table>
+</body>
+</html>

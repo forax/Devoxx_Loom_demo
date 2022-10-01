@@ -2,10 +2,6 @@ package org.paumard.loom.threads;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class D_MaxVirtualThreads {

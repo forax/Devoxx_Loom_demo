@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.paumard</groupId>
-    <artifactId>devoxxuk-2022</artifactId>
+    <artifactId>devoxxbe-2022</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
-    </properties>
+    <modules>
+        <module>travelpage</module>
+        <module>threads</module>
+    </modules>
 
 </project>

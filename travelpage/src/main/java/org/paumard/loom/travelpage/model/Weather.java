@@ -9,9 +9,10 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeoutException;
 
-public record Weather(String agency, String weather) implements PageComponent {
+public record Weather(String agency, String weather) implements TravelComponent {
 
     public static final Weather UNKNOWN = new Weather("", "Mostly Sunny");
 
@@ -40,7 +41,7 @@ public record Weather(String agency, String weather) implements PageComponent {
             scope.close();
         }
 
-        public Weather getWeather() throws ExecutionException {
+        public Weather weather() throws ExecutionException {
             if (!timeout) {
                 return this.scope.result();
             } else {
@@ -51,7 +52,7 @@ public record Weather(String agency, String weather) implements PageComponent {
 
     public static Weather readWeather() throws InterruptedException, ExecutionException {
 
-        Random random = new Random();
+        var random = ThreadLocalRandom.current();
 
         try (var scope = new WeatherScope()) {
 
@@ -70,7 +71,7 @@ public record Weather(String agency, String weather) implements PageComponent {
 
             scope.joinUntil(Instant.now().plus(100, TravelPageExample.CHRONO_UNIT));
 
-            return scope.getWeather();
+            return scope.weather();
         }
     }
 }

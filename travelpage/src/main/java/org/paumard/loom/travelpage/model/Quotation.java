@@ -5,22 +5,21 @@ import org.paumard.loom.travelpage.TravelPageExample;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeoutException;
 
-public record Quotation(String agency, int quotation) implements PageComponent {
+public record Quotation(String agency, int quotation) implements TravelComponent {
 
     public static class QuotationException extends RuntimeException {
 
     }
 
     private static class QuotationScope extends StructuredTaskScope<Quotation> {
-        private final Collection<Quotation> quotations = new ConcurrentLinkedQueue<>();
-        private final Collection<Throwable> exceptions = new ConcurrentLinkedQueue<>();
+        private final ConcurrentLinkedQueue<Quotation> quotations = new ConcurrentLinkedQueue<>();
+        private final ConcurrentLinkedQueue<Throwable> exceptions = new ConcurrentLinkedQueue<>();
 
         @Override
         protected void handleComplete(Future<Quotation> future) {
@@ -47,7 +46,7 @@ public record Quotation(String agency, int quotation) implements PageComponent {
         }
 
         public QuotationException exceptions() {
-            QuotationException exception = new QuotationException();
+            var exception = new QuotationException();
             exceptions.forEach(exception::addSuppressed);
             return exception;
         }
@@ -61,7 +60,7 @@ public record Quotation(String agency, int quotation) implements PageComponent {
 
     public static Quotation readQuotation() throws InterruptedException {
 
-        Random random = new Random();
+        var random = ThreadLocalRandom.current();
 
         try (var scope = new QuotationScope()) {
 

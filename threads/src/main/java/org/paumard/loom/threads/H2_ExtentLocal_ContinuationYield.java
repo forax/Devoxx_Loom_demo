@@ -1,5 +1,5 @@
 package org.paumard.loom.threads;
-
+/*
 import jdk.incubator.concurrent.ExtentLocal;
 import jdk.internal.vm.Continuation;
 import jdk.internal.vm.ContinuationScope;
@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
-public class H1_ExtentLocal_ContinuationYield {
+public class H2_ExtentLocal_ContinuationYield {
 
     // --enable-preview --add-modules jdk.incubator.concurrent --add-exports java.base/jdk.internal.vm=ALL-UNNAMED
 
@@ -42,8 +42,6 @@ public class H1_ExtentLocal_ContinuationYield {
                 continuations.stream()
                         .<Callable<Boolean>>map(continuation -> () -> {
                             continuation.run();
-                            continuation.run();
-                            continuation.run();
                             return true;
                         })
                         .toList();
@@ -53,7 +51,17 @@ public class H1_ExtentLocal_ContinuationYield {
             for (Future<Boolean> future : futures) {
                 future.get();
             }
-            System.out.println("Ok");
+            System.out.println("Step 1");
+            futures = executor.invokeAll(callables);
+            for (Future<Boolean> future : futures) {
+                future.get();
+            }
+            System.out.println("Step 2");
+            futures = executor.invokeAll(callables);
+            for (Future<Boolean> future : futures) {
+                future.get();
+            }
+            System.out.println("Step 3");
         }
     }
-}
+}*/
