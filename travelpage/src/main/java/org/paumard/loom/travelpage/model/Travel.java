@@ -18,8 +18,8 @@ public record Travel(Quotation quotation, Weather weather) {
         case RUNNING -> throw new IllegalStateException("Task is still running");
         case SUCCESS -> {
           switch (future.resultNow()) {
-            case Quotation quotation -> this.quotation = quotation;
-            case Weather weather -> this.weather = weather;
+            case Quotation(String agency, int price) quotation -> this.quotation = quotation;
+            case Weather(String agency, String weatherText) weather -> this.weather = weather;
           }
         }
         case FAILED -> {
