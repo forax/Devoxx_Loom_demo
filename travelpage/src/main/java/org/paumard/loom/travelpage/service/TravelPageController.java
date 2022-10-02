@@ -6,6 +6,7 @@ import org.paumard.loom.travelpage.model.Quotation.QuotationException;
 import org.paumard.loom.travelpage.model.Travel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +26,15 @@ public class TravelPageController {
   @Operation(summary = "find a travel")
   public Travel findTravel(@RequestBody TravelRequest travelRequest) throws InterruptedException {
     return Travel.readTravelPage();
+  }
+
+  @GetMapping(path="/whoami", produces = APPLICATION_JSON_VALUE)
+  @Operation(summary = "who am i")
+  public String whoami() {
+    return """
+        {
+          "current-thread": "%s"
+        }
+        """.formatted(Thread.currentThread());
   }
 }
