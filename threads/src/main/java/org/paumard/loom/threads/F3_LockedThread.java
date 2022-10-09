@@ -8,62 +8,60 @@ import java.util.stream.IntStream;
 
 public class F3_LockedThread {
 
-    private final static Lock lock = new ReentrantLock();
-    private static int counter = 0;
+  static class Counter {
+    private int counter;
+    private final ReentrantLock lock = new ReentrantLock();
+
+    public int getAndIncrement() {
+      lock.lock();
+      try {
+        return counter++;
+      } finally {
+        lock.unlock();
+      }
+    }
+
+    @Override
+    public String toString() {
+        lock.lock();
+        try {
+          return "" + counter;
+        } finally {
+          lock.unlock();
+        }
+    }
+  }
 
     public static void main(String[] args) throws InterruptedException {
-
+        var counter = new Counter();
         var threads = IntStream.range(0, 4_000)
               .mapToObj(index -> Thread.ofVirtual()
                     .unstarted(() -> {
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        lock.lock();
-                        try {
-                            counter++;
-                        } finally {
-                            lock.unlock();
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        lock.lock();
-                        try {
-                            counter++;
-                        } finally {
-                            lock.unlock();
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        lock.lock();
-                        try {
-                            counter++;
-                        } finally {
-                            lock.unlock();
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
                     }))
               .toList();
 
-        Instant begin = Instant.now();
-        for (var thread : threads) {
-            thread.start();
-        }
+        var start = System.currentTimeMillis();
+        threads.forEach(Thread::start);
         for (var thread : threads) {
             thread.join();
         }
-        Instant end = Instant.now();
-        lock.lock();
-        try {
-            System.out.println("# counter = " + counter);
-        } finally {
-            lock.unlock();
-        }
-        System.out.println("Duration = " + Duration.between(begin, end));
-
+        var end = System.currentTimeMillis();
+        System.out.println("# counter = " + counter);
+        System.out.println("Time = " + (end - start));
     }
 }

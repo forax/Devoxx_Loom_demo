@@ -10,14 +10,17 @@ public class F0_SleepingThreads {
     public static void main(String[] args) throws InterruptedException {
 
         var counter = new AtomicInteger();
-        var threads = IntStream.range(0, 1_000)
-              .mapToObj(index -> Thread.ofPlatform()
+        var threads = IntStream.range(0, 4_000)
+              .mapToObj(index -> Thread.ofVirtual()
                     .unstarted(() -> {
                         try {
                             if (index == 10) {
                                 System.out.println(Thread.currentThread());
                             }
                             Thread.sleep(1_000);
+                            if (index == 10) {
+                                System.out.println(Thread.currentThread());
+                            }
                             counter.incrementAndGet();
                         } catch (InterruptedException e) {
                             throw new AssertionError(e);
@@ -25,16 +28,14 @@ public class F0_SleepingThreads {
                     }))
               .toList();
 
-        Instant begin = Instant.now();
-        for (var thread : threads) {
-            thread.start();
-        }
+        var start = System.currentTimeMillis();
+        threads.forEach(Thread::start);
         for (var thread : threads) {
             thread.join();
         }
-        Instant end = Instant.now();
+        var end = System.currentTimeMillis();
         System.out.println("# counter = " + counter);
-        System.out.println("Duration = " + Duration.between(begin, end));
+        System.out.println("Time = " + (end - start));
 
     }
 }

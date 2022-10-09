@@ -6,50 +6,54 @@ import java.util.stream.IntStream;
 
 public class F1_SyncedThread {
 
-    private final static Object lock = new Object();
-    private static int counter = 0;
+    static class Counter {
+      private int counter;
+      private final Object lock = new Object();
+
+      public int getAndIncrement() {
+        synchronized (lock) {
+          return counter++;
+        }
+      }
+
+      @Override
+      public String toString() {
+        synchronized (lock) {
+          return "" + counter;
+        }
+      }
+    }
 
     public static void main(String[] args) throws InterruptedException {
-
-        var threads = IntStream.range(0, 1_000)
+        var counter = new Counter();
+        var threads = IntStream.range(0, 4_000)
               .mapToObj(index -> Thread.ofVirtual()
                     .unstarted(() -> {
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        synchronized (lock) {
-                            counter++;
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        synchronized (lock) {
-                            counter++;
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
-                        synchronized (lock) {
-                            counter++;
-                        }
+                        counter.getAndIncrement();
                         if (index == 10) {
                             System.out.println(Thread.currentThread());
                         }
                     }))
               .toList();
 
-        Instant begin = Instant.now();
-        for (var thread : threads) {
-            thread.start();
-        }
+        var start = System.currentTimeMillis();
+        threads.forEach(Thread::start);
         for (var thread : threads) {
             thread.join();
         }
-        Instant end = Instant.now();
-        synchronized (lock) {
-            System.out.println("# counter = " + counter);
-        }
-        System.out.println("Duration = " + Duration.between(begin, end));
-
+        var end = System.currentTimeMillis();
+        System.out.println("# counter = " + counter);
+        System.out.println("Time = " + (end - start));
     }
 }
