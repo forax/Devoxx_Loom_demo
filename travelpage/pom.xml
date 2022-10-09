@@ -101,8 +101,7 @@
                     <compilerArgs>
                         <arg>--enable-preview</arg>
                         <arg>--add-modules=jdk.incubator.concurrent</arg>
-                        <arg>--add-exports</arg>
-                        <arg>java.base/jdk.internal.vm=ALL-UNNAMED</arg>
+                        <arg>--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
