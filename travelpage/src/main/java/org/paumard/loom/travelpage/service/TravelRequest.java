@@ -1,4 +1,4 @@
 package org.paumard.loom.travelpage.service;
 
-public record TravelRequest(String destrination) {
+public record TravelRequest(String destination) {
 }
