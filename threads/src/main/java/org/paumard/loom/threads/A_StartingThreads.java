@@ -7,7 +7,7 @@ public class A_StartingThreads {
     public static void main(String[] args) throws InterruptedException {
 
         // platform threads
-        Thread pthread = new Thread(() -> {
+        var pthread = new Thread(() -> {
             System.out.println("platform: " + Thread.currentThread());
         });
         pthread.start();

@@ -14,38 +14,33 @@ public class G2_ContinuationYield {
     // --enable-preview --add-exports java.base/jdk.internal.vm=ALL-UNNAMED
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-
-
-        var continuationScopes =
-              IntStream.range(10, 20)
-                    .mapToObj(index -> new ContinuationScope("Hello-" + index))
-                    .toList();
+        var scope = new ContinuationScope("HelloLoom");
 
         var continuations =
               IntStream.range(10, 20)
-                    .mapToObj(index -> new Continuation(continuationScopes.get(index - 10),
+                    .mapToObj(index -> new Continuation(scope,
                           () -> {
                               System.out.println("A-" + index + " [" + Thread.currentThread() + "]");
-                              Continuation.yield(continuationScopes.get(index - 10));
+                              Continuation.yield(scope);
                               System.out.println("B-" + index + " [" + Thread.currentThread() + "]");
-                              Continuation.yield(continuationScopes.get(index - 10));
+                              Continuation.yield(scope);
                               System.out.println("C-" + index + " [" + Thread.currentThread() + "]");
                           }))
                     .toList();
 
         var callables =
               continuations.stream()
-                    .<Callable<Boolean>>map(continuation -> () -> {
-                        continuation.run();
-                        continuation.run();
-                        continuation.run();
-                        return true;
+                    .<Callable<Void>>map(c -> () -> {
+                        while(!c.isDone()) {
+                          c.run();
+                        }
+                        return null;
                     })
                     .toList();
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var futures = executor.invokeAll(callables);
-            for (Future<Boolean> future : futures) {
+            for (var future : futures) {
                 future.get();
             }
             System.out.println("Ok");

@@ -12,25 +12,26 @@ public class D_MaxVirtualThreads {
 
         // virtual thread
         var threads =
-              IntStream.range(0, 100)
+              IntStream.range(0, 10_000)
                     .mapToObj(index ->
                           Thread.ofVirtual()
-                                .name("platform-", index)
+                                .name("virtual-", index)
                                 .unstarted(() -> {
-                                    try {
-                                        Thread.sleep(2_000);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
+                                  //System.out.println(index);
+                                  try {
+                                    Thread.sleep(2_000);
+                                  } catch (InterruptedException e) {
+                                       throw new AssertionError(e);
+                                  }
                                 }))
                     .toList();
 
-        Instant begin = Instant.now();
+        var start = System.currentTimeMillis();
         threads.forEach(Thread::start);
-        for (Thread thread : threads) {
+        for (var thread : threads) {
             thread.join();
         }
-        Instant end = Instant.now();
-        System.out.println("Duration = " + Duration.between(begin, end));
+        var end = System.currentTimeMillis();
+        System.out.println("Time = " + (end - start));
     }
 }
