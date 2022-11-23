@@ -24,6 +24,7 @@ public class SpringApp {
 		return handler -> handler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
 	}
 
+	// --enable-preview --add-modules jdk.incubator.concurrent
 	public static void main(String[] args) {
 		SpringApplication.run(SpringApp.class, args);
 	}
