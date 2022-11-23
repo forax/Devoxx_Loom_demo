@@ -18,4 +18,4 @@ The folder `travelpage` contains a small Spring Web App, that can be run with
   cd travelpage
   mvn spring-boot:run
 ```
-and then use your browser to open http://localhot:8080/
+and then use your browser to open http://localhost:8080/
