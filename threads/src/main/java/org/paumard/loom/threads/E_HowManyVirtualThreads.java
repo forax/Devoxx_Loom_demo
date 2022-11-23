@@ -25,7 +25,7 @@ public class E_HowManyVirtualThreads {
               .mapToObj(i -> Thread.ofVirtual()
                     .unstarted(() -> {
                         try {
-                          Thread.sleep(2_000);
+                          Thread.sleep(20);
                         } catch (InterruptedException e) {
                           throw new AssertionError(e);
                         }

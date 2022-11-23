@@ -12,7 +12,7 @@ public class D_MaxVirtualThreads {
 
         // virtual thread
         var threads =
-              IntStream.range(0, 10_000)
+              IntStream.range(0, 1_000_000)
                     .mapToObj(index ->
                           Thread.ofVirtual()
                                 .name("virtual-", index)

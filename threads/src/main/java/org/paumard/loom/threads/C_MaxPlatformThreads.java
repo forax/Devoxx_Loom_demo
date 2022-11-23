@@ -17,7 +17,7 @@ public class C_MaxPlatformThreads {
                     Thread.ofPlatform()
                           .name("platform-", index)
                           .unstarted(() -> {
-                            //System.out.println(index);
+                            System.out.println(index);
                             try {
                               Thread.sleep(2_000);
                             } catch (InterruptedException e) {
